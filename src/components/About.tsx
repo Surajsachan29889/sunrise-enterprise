@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import "./About.css";
 
 const About = () => {
@@ -36,10 +37,12 @@ const About = () => {
             <div className="card-header">
               <div className="avatar-section">
                 <div className="avatar-circle">
-                  <img
+                  <Image
                     src="/stuti.jpeg"
                     alt="Dr. Stuti Sachan"
                     className="avatar-image"
+                    width={120}
+                    height={120}
                   />
                   <div className="avatar-ring"></div>
                 </div>
@@ -151,10 +154,12 @@ const About = () => {
             <div className="card-header">
               <div className="avatar-section">
                 <div className="avatar-circle">
-                  <img
+                  <Image
                     src="/neeraj.jpeg"
                     alt="Dr. Neeraj Sachan"
                     className="avatar-image"
+                    width={120}
+                    height={120}
                   />
                   <div className="avatar-ring"></div>
                 </div>

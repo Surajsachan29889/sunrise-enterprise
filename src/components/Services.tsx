@@ -119,7 +119,7 @@ const Services = () => {
           <div className="cta-content">
             <h3>Ready to Transform Your Healthcare Operations?</h3>
             <p>
-              Let's discuss how our expert solutions can elevate your
+              Let&apos;s discuss how our expert solutions can elevate your
               organization
             </p>
             <button className="cta-button">

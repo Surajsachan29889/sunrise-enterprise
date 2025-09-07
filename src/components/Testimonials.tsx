@@ -112,17 +112,13 @@ const Testimonials = () => {
     }
   };
 
-  const getVisibleTestimonials = () => {
-    const startIndex = currentSlide * slidesToShow;
-    return testimonials.slice(startIndex, startIndex + slidesToShow);
-  };
 
   return (
     <section id="testimonials" className="testimonials-section">
       {/* Background Elements */}
       <div className="testimonials-background">
-        <div className="floating-quote quote-1">"</div>
-        <div className="floating-quote quote-2">"</div>
+        <div className="floating-quote quote-1">&quot;</div>
+        <div className="floating-quote quote-2">&quot;</div>
         <div className="testimonials-pattern"></div>
       </div>
 
@@ -140,7 +136,7 @@ const Testimonials = () => {
           </h2>
 
           <p className="testimonials-subtitle">
-            Discover how we've transformed healthcare operations across India's
+            Discover how we&apos;ve transformed healthcare operations across India&apos;s
             leading medical institutions
           </p>
         </div>
@@ -204,7 +200,7 @@ const Testimonials = () => {
                           {/* Testimonial Content */}
                           <div className="testimonial-content">
                             <p className="testimonial-quote">
-                              "{testimonial.quote}"
+                              &quot;{testimonial.quote}&quot;
                             </p>
 
                             <div className="testimonial-rating">

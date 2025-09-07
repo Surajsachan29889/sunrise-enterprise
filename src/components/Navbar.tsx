@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { useTheme } from "@/contexts/ThemeContext";
 import "./Navbar.css";
 
@@ -86,10 +87,12 @@ const Navbar = () => {
           <div className="navbar-brand">
             <a href="#home" className="brand-link" onClick={closeMobileMenu}>
               <div className="brand-logo">
-                <img
+                <Image
                   src="/logo.png"
                   alt="Sunrise Enterprises"
                   className="logo-image"
+                  width={40}
+                  height={40}
                 />
                 <div className="logo-glow"></div>
               </div>
