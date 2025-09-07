@@ -1,4 +1,9 @@
+"use client";
+
 import React from "react";
+import { motion } from "framer-motion";
+import { useStaggeredAnimation } from "../hooks/useScrollAnimation";
+import { useSafeIntersection } from "../hooks/useSafeScroll";
 import "./Services.css";
 
 const services = [
@@ -37,15 +42,81 @@ const services = [
 ];
 
 const Services = () => {
+  const { ref: servicesRef, isInView } = useSafeIntersection();
+  const { ref: cardsRef, isInView: cardsInView } = useStaggeredAnimation();
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { y: 50, opacity: 0, scale: 0.9 },
+    visible: { y: 0, opacity: 1, scale: 1 },
+  };
+
   return (
-    <section id="services" className="services-section">
+    <motion.section
+      id="services"
+      className="services-section"
+      ref={servicesRef}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={containerVariants}
+    >
       {/* Background Elements */}
-      <div className="services-background">
-        <div className="floating-orb orb-1"></div>
-        <div className="floating-orb orb-2"></div>
-        <div className="floating-orb orb-3"></div>
-        <div className="grid-pattern"></div>
-      </div>
+      <motion.div className="services-background">
+        <motion.div
+          className="floating-orb orb-1"
+          animate={{
+            y: [0, -30, 0],
+            x: [0, 20, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+        <motion.div
+          className="floating-orb orb-2"
+          animate={{
+            y: [0, 40, 0],
+            x: [0, -25, 0],
+            scale: [1.1, 1, 1.1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+        <motion.div
+          className="floating-orb orb-3"
+          animate={{
+            y: [0, -20, 0],
+            x: [0, 15, 0],
+            rotate: [0, 360, 0],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+        <motion.div
+          className="grid-pattern"
+          animate={{ opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 4, repeat: Infinity }}
+        ></motion.div>
+      </motion.div>
 
       <div className="services-container">
         {/* Section Header */}
@@ -76,9 +147,26 @@ const Services = () => {
         </div>
 
         {/* Services Grid */}
-        <div className="services-grid">
+        <motion.div
+          className="services-grid"
+          ref={cardsRef}
+          variants={containerVariants}
+          animate={cardsInView ? "visible" : "hidden"}
+        >
           {services.map((service, index) => (
-            <div key={index} className="service-card" data-index={index}>
+            <motion.div
+              key={index}
+              className="service-card"
+              data-index={index}
+              variants={cardVariants}
+              whileHover={{
+                scale: 1.05,
+                y: -10,
+                rotateZ: 2,
+                transition: { duration: 0.3 },
+              }}
+              whileTap={{ scale: 0.95 }}
+            >
               <div className="card-glow"></div>
               <div className="card-border"></div>
 
@@ -105,31 +193,81 @@ const Services = () => {
               </div>
 
               <div className="service-footer">
-                <button className="learn-more-btn">
+                <motion.button
+                  className="learn-more-btn"
+                  whileHover={{ scale: 1.05, x: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
                   Learn More
-                  <span className="btn-arrow">→</span>
-                </button>
+                  <motion.span
+                    className="btn-arrow"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    →
+                  </motion.span>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Call to Action */}
-        <div className="services-cta">
-          <div className="cta-content">
-            <h3>Ready to Transform Your Healthcare Operations?</h3>
-            <p>
+        <motion.div
+          className="services-cta"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          <motion.div
+            className="cta-content"
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <motion.h3
+              initial={{ y: 20, opacity: 0 }}
+              animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              Ready to Transform Your Healthcare Operations?
+            </motion.h3>
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+            >
               Let&apos;s discuss how our expert solutions can elevate your
               organization
-            </p>
-            <button className="cta-button">
+            </motion.p>
+            <motion.button
+              className="cta-button"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={
+                isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }
+              }
+              transition={{
+                duration: 0.5,
+                delay: 1.2,
+                type: "spring",
+                stiffness: 300,
+              }}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Get Started Today
-              <span className="cta-sparkle">✨</span>
-            </button>
-          </div>
-        </div>
+              <motion.span
+                className="cta-sparkle"
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              >
+                ✨
+              </motion.span>
+            </motion.button>
+          </motion.div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

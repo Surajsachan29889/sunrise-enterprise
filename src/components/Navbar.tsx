@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
 import "./Navbar.css";
 
@@ -9,6 +10,17 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious();
+    if (previous !== undefined && latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
   const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
@@ -74,7 +86,15 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`navbar ${isScrolled ? "navbar-scrolled" : ""}`}>
+    <motion.nav
+      className={`navbar ${isScrolled ? "navbar-scrolled" : ""}`}
+      variants={{
+        visible: { y: 0 },
+        hidden: { y: "-100%" },
+      }}
+      animate={hidden ? "hidden" : "visible"}
+      transition={{ duration: 0.35, ease: "easeInOut" }}
+    >
       {/* Background Elements */}
       <div className="navbar-background">
         <div className="navbar-glow"></div>
@@ -84,9 +104,23 @@ const Navbar = () => {
       <div className="navbar-container">
         <div className="navbar-content">
           {/* Logo and Brand */}
-          <div className="navbar-brand">
-            <a href="#home" className="brand-link" onClick={closeMobileMenu}>
-              <div className="brand-logo">
+          <motion.div
+            className="navbar-brand"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400 }}
+          >
+            <motion.a
+              href="#home"
+              className="brand-link"
+              onClick={closeMobileMenu}
+              whileHover={{ x: 5 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
+              <motion.div
+                className="brand-logo"
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
                 <Image
                   src="/logo.png"
                   alt="Sunrise Enterprises"
@@ -94,14 +128,18 @@ const Navbar = () => {
                   width={40}
                   height={40}
                 />
-                <div className="logo-glow"></div>
-              </div>
+                <motion.div
+                  className="logo-glow"
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                ></motion.div>
+              </motion.div>
               <div className="brand-text">
                 <span className="brand-name">Sunrise</span>
                 <span className="brand-subtitle">Enterprises</span>
               </div>
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
 
           {/* Desktop Navigation */}
           <div className="navbar-menu">
@@ -243,7 +281,7 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="mobile-menu-overlay" onClick={closeMobileMenu}></div>
       )}
-    </nav>
+    </motion.nav>
   );
 };
 

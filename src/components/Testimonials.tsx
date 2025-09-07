@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useStaggeredAnimation } from "../hooks/useScrollAnimation";
+import { useSafeIntersection } from "../hooks/useSafeScroll";
 import "./Testimonials.css";
 
 const testimonials = [
@@ -51,6 +54,8 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+  const { ref: testimonialsRef, isInView } = useSafeIntersection();
+  const { ref: statsRef, isInView: statsInView } = useStaggeredAnimation();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -112,9 +117,31 @@ const Testimonials = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: { y: 0, opacity: 1 },
+  };
 
   return (
-    <section id="testimonials" className="testimonials-section">
+    <motion.section
+      id="testimonials"
+      className="testimonials-section"
+      ref={testimonialsRef}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={containerVariants}
+    >
       {/* Background Elements */}
       <div className="testimonials-background">
         <div className="floating-quote quote-1">&quot;</div>
@@ -136,8 +163,8 @@ const Testimonials = () => {
           </h2>
 
           <p className="testimonials-subtitle">
-            Discover how we&apos;ve transformed healthcare operations across India&apos;s
-            leading medical institutions
+            Discover how we&apos;ve transformed healthcare operations across
+            India&apos;s leading medical institutions
           </p>
         </div>
 
@@ -145,25 +172,31 @@ const Testimonials = () => {
         <div className="testimonials-slider">
           <div className="slider-container">
             {/* Navigation Arrows */}
-            <button
+            <motion.button
               className="slider-arrow slider-arrow-left"
               onClick={goToPrevious}
               aria-label="Previous testimonials"
+              whileHover={{ scale: 1.1, x: -2 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 400 }}
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
               </svg>
-            </button>
+            </motion.button>
 
-            <button
+            <motion.button
               className="slider-arrow slider-arrow-right"
               onClick={goToNext}
               aria-label="Next testimonials"
+              whileHover={{ scale: 1.1, x: 2 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 400 }}
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
               </svg>
-            </button>
+            </motion.button>
 
             {/* Slider Track */}
             <div
@@ -284,26 +317,57 @@ const Testimonials = () => {
         </div>
 
         {/* Statistics */}
-        <div className="testimonials-stats">
-          <div className="stat-item">
-            <div className="stat-number">50+</div>
-            <div className="stat-label">Healthcare Institutions</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">98%</div>
-            <div className="stat-label">Client Satisfaction</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">15+</div>
-            <div className="stat-label">Years Experience</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">100%</div>
-            <div className="stat-label">Success Rate</div>
-          </div>
-        </div>
+        <motion.div
+          className="testimonials-stats"
+          ref={statsRef}
+          variants={containerVariants}
+          initial="hidden"
+          animate={statsInView ? "visible" : "hidden"}
+        >
+          {[
+            { number: "50+", label: "Healthcare Institutions" },
+            { number: "98%", label: "Client Satisfaction" },
+            { number: "15+", label: "Years Experience" },
+            { number: "100%", label: "Success Rate" },
+          ].map((stat, index) => (
+            <motion.div
+              key={index}
+              className="stat-item"
+              variants={itemVariants}
+              whileHover={{
+                scale: 1.1,
+                y: -5,
+                transition: { duration: 0.2 },
+              }}
+            >
+              <motion.div
+                className="stat-number"
+                initial={{ scale: 0 }}
+                animate={isInView ? { scale: 1 } : { scale: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.5 + index * 0.1,
+                  type: "spring",
+                  stiffness: 300,
+                }}
+              >
+                {stat.number}
+              </motion.div>
+              <motion.div
+                className="stat-label"
+                initial={{ opacity: 0, y: 10 }}
+                animate={
+                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
+                }
+                transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
+              >
+                {stat.label}
+              </motion.div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

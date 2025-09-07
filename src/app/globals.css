@@ -1,5 +1,7 @@
 /* CSS Variables for Theming */
 :root {
+  /* Smooth scrolling for the entire page */
+  scroll-behavior: smooth;
   /* Brand Colors */
   --primary: #ff9500;
   --primary-light: #ffb347;

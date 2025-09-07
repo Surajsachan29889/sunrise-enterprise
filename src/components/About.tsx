@@ -1,39 +1,147 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import { useStaggeredAnimation } from "../hooks/useScrollAnimation";
+import { useSafeIntersection } from "../hooks/useSafeScroll";
 import "./About.css";
 
 const About = () => {
+  const { ref: safeRef, isInView: safeInView } = useSafeIntersection();
+  const { ref: staggerRef, isInView: staggerInView } = useStaggeredAnimation();
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: { y: 0, opacity: 1 },
+  };
+
+  const cardVariants = {
+    hidden: { scale: 0.8, opacity: 0, y: 50 },
+    visible: { scale: 1, opacity: 1, y: 0 },
+  };
+
   return (
-    <section id="about" className="about-section">
+    <motion.section
+      id="about"
+      className="about-section"
+      ref={safeRef}
+      initial="hidden"
+      animate={safeInView ? "visible" : "hidden"}
+      variants={containerVariants}
+    >
       {/* Background Elements */}
-      <div className="about-background">
-        <div className="floating-shape shape-1"></div>
-        <div className="floating-shape shape-2"></div>
-        <div className="floating-shape shape-3"></div>
-        <div className="grid-overlay"></div>
-      </div>
+      <motion.div className="about-background">
+        <motion.div
+          className="floating-shape shape-1"
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+        <motion.div
+          className="floating-shape shape-2"
+          animate={{
+            y: [0, 30, 0],
+            rotate: [360, 180, 0],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+        <motion.div
+          className="floating-shape shape-3"
+          animate={{
+            y: [0, -15, 0],
+            x: [0, 10, 0],
+            rotate: [0, -180, -360],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        ></motion.div>
+        <motion.div
+          className="grid-overlay"
+          animate={{ opacity: [0.1, 0.3, 0.1] }}
+          transition={{ duration: 4, repeat: Infinity }}
+        ></motion.div>
+      </motion.div>
 
       <div className="about-container">
         {/* Section Header */}
-        <div className="about-header">
-          <div className="section-badge">
-            <span className="badge-icon">👥</span>
+        <motion.div className="about-header" variants={itemVariants}>
+          <motion.div
+            className="section-badge"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400 }}
+          >
+            <motion.span
+              className="badge-icon"
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+            >
+              👥
+            </motion.span>
             Meet Our Team
-          </div>
-          <h2 className="about-title">
-            <span className="title-highlight">Pioneering</span> Healthcare
-            Excellence
-          </h2>
-          <p className="about-subtitle">
+          </motion.div>
+          <motion.h2 className="about-title" variants={itemVariants}>
+            <motion.span
+              className="title-highlight"
+              initial={{ x: -50, opacity: 0 }}
+              animate={
+                safeInView ? { x: 0, opacity: 1 } : { x: -50, opacity: 0 }
+              }
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Pioneering
+            </motion.span>{" "}
+            Healthcare Excellence
+          </motion.h2>
+          <motion.p className="about-subtitle" variants={itemVariants}>
             Led by visionary healthcare professionals with decades of combined
             experience in transforming medical institutions worldwide
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Team Cards */}
-        <div className="team-grid">
+        <motion.div
+          className="team-grid"
+          ref={staggerRef}
+          variants={containerVariants}
+          initial="hidden"
+          animate={staggerInView ? "visible" : "hidden"}
+        >
           {/* Dr. Stuti Sachan Card */}
-          <div className="team-card">
+          <motion.div
+            className="team-card"
+            variants={cardVariants}
+            whileHover={{
+              scale: 1.02,
+              y: -10,
+              transition: { duration: 0.3 },
+            }}
+            whileTap={{ scale: 0.98 }}
+          >
             <div className="card-header">
               <div className="avatar-section">
                 <div className="avatar-circle">
@@ -44,7 +152,15 @@ const About = () => {
                     width={120}
                     height={120}
                   />
-                  <div className="avatar-ring"></div>
+                  <motion.div
+                    className="avatar-ring"
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  ></motion.div>
                 </div>
                 <div className="status-dot"></div>
               </div>
@@ -147,10 +263,19 @@ const About = () => {
                 <span className="tag">Healthcare Systems</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Dr. Neeraj Sachan Card */}
-          <div className="team-card">
+          <motion.div
+            className="team-card"
+            variants={cardVariants}
+            whileHover={{
+              scale: 1.02,
+              y: -10,
+              transition: { duration: 0.3 },
+            }}
+            whileTap={{ scale: 0.98 }}
+          >
             <div className="card-header">
               <div className="avatar-section">
                 <div className="avatar-circle">
@@ -161,7 +286,15 @@ const About = () => {
                     width={120}
                     height={120}
                   />
-                  <div className="avatar-ring"></div>
+                  <motion.div
+                    className="avatar-ring"
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  ></motion.div>
                 </div>
                 <div className="status-dot"></div>
               </div>
@@ -250,12 +383,16 @@ const About = () => {
                 <span className="tag">Process Optimization</span>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Mission Statement */}
-        <div className="mission-section">
-          <div className="mission-card">
+        <motion.div className="mission-section" variants={itemVariants}>
+          <motion.div
+            className="mission-card"
+            whileHover={{ scale: 1.05, y: -5 }}
+            transition={{ type: "spring", stiffness: 400 }}
+          >
             <div className="mission-glow"></div>
             <div className="mission-content">
               <div className="mission-icon">
@@ -274,10 +411,10 @@ const About = () => {
                 excellence in patient care and operational efficiency.
               </p>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
